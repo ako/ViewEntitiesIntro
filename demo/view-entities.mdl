@@ -1,0 +1,86 @@
+mdl 1;
+-- Example model for the "Mendix View Entities" deck.
+-- A small shop: customers place orders, orders have lines, lines reference products,
+-- products belong to a category.
+
+create persistent entity Shop.Customer (
+  Name: string(200) not null,
+  Country: string(100)
+);
+
+create persistent entity Shop.Category (
+  Name: string(100) not null
+);
+
+create persistent entity Shop.Product (
+  Name: string(200) not null,
+  Price: decimal not null
+);
+
+create persistent entity Shop.SalesOrder (
+  OrderNumber: string(20) not null,
+  OrderDate: datetime not null,
+  Status: string(20)
+);
+
+create persistent entity Shop.OrderLine (
+  Quantity: integer not null,
+  UnitPrice: decimal not null
+);
+
+create association Shop.SalesOrder_Customer from Shop.SalesOrder to Shop.Customer type Reference owner Default;
+create association Shop.OrderLine_SalesOrder from Shop.OrderLine to Shop.SalesOrder type Reference owner Default;
+create association Shop.OrderLine_Product from Shop.OrderLine to Shop.Product type Reference owner Default;
+create association Shop.Product_Category from Shop.Product to Shop.Category type Reference owner Default;
+
+-- 1. The data grid problem: one row per order, with the customer name and the order
+--    total flattened in. Replaces a calculated attribute and an associated column.
+create view entity Shop.OrderOverview (
+  OrderNumber: string(20),
+  OrderDate: datetime,
+  CustomerName: string(200),
+  LineCount: integer,
+  OrderTotal: decimal
+) as (
+  select o.OrderNumber as OrderNumber,
+         o.OrderDate as OrderDate,
+         c.Name as CustomerName,
+         count(l.ID) as LineCount,
+         sum(l.Quantity * l.UnitPrice) as OrderTotal
+  from Shop.SalesOrder as o
+  inner join o/Shop.SalesOrder_Customer/Shop.Customer as c
+  left join o/Shop.OrderLine_SalesOrder/Shop.OrderLine as l
+  group by o.OrderNumber, o.OrderDate, c.Name
+);
+
+-- 2. Composition, layer 1: one flat fact row per order line.
+create view entity Shop.SalesFact (
+  OrderYear: integer,
+  OrderMonth: integer,
+  CategoryName: string(100),
+  Amount: decimal
+) as (
+  select datepart(YEAR, o.OrderDate) as OrderYear,
+         datepart(MONTH, o.OrderDate) as OrderMonth,
+         cat.Name as CategoryName,
+         l.Quantity * l.UnitPrice as Amount
+  from Shop.OrderLine as l
+  inner join l/Shop.OrderLine_SalesOrder/Shop.SalesOrder as o
+  inner join l/Shop.OrderLine_Product/Shop.Product as p
+  inner join p/Shop.Product_Category/Shop.Category as cat
+);
+
+-- 3. Composition, layer 2: a chart series built on the first view.
+create view entity Shop.MonthlySalesByCategory (
+  OrderYear: integer,
+  OrderMonth: integer,
+  CategoryName: string(100),
+  Revenue: decimal
+) as (
+  select f.OrderYear as OrderYear,
+         f.OrderMonth as OrderMonth,
+         f.CategoryName as CategoryName,
+         sum(f.Amount) as Revenue
+  from Shop.SalesFact as f
+  group by f.OrderYear, f.OrderMonth, f.CategoryName
+);
