@@ -126,17 +126,18 @@ def s02():  # roadmap
           ("02", "The solution", "An entity defined by an OQL query"),
           ("03", "How it works", "Design time, run time, composition, security"),
           ("04", "Why it is right", "Compared with the usual workarounds"),
-          ("05", "Tips and tricks", "Modelling, OQL gotchas, support checklist")]
+          ("05", "Tips and tricks", "Modelling habits and OQL gotchas"),
+          ("06", "With mxcli", "Build, check and measure from the command line")]
     v = ""
     for i, (n, t, sub) in enumerate(qs):
-        y = 150 + i * 140
-        v += step(f"q{i}", t, rect(80, y, 860, 112, W, HAIR, 2, 14) +
-                  text(120, y + 70, 40, n, "d", AMB) + text(220, y + 52, 30, t, "d5") + text(220, y + 88, 21, sub, "b", MUT))
-    return dict(n=2, label="Agenda", title="Five questions",
+        y = 130 + i * 122
+        v += step(f"q{i}", t, rect(80, y, 860, 100, W, HAIR, 2, 14) +
+                  text(120, y + 64, 40, n, "d", AMB) + text(220, y + 46, 30, t, "d5") + text(220, y + 80, 21, sub, "b", MUT))
+    return dict(n=2, label="Agenda", title="Six questions",
                 body="Written for developers who build with it, support engineers who troubleshoot it, "
                      "and pre-sales who explain it.", visual=v,
-                say="We will answer five questions: what problem view entities solve, what they are, "
-                    "how they work, why they are the right answer, and how to use them well.")
+                say="We will answer six questions: what problem view entities solve, what they are, "
+                    "how they work, why they are the right answer, how to use them well, and how to build and measure them with M X C L I.")
 
 
 def s03():  # the problem: model shape vs page shape
@@ -327,7 +328,7 @@ def s12():  # why it's right: comparison table
     crit = ["Work runs in the database", "Grid filter, sort, page", "Reusable and composable", "No sync code to maintain", "Declarative, readable"]
     opts = [("Calculated attr.", "xx-pp+"), ("Microflow + NPE", "xx-x-"), ("Stored copy", "+p+x-"), ("View entity", "+++++")]
     x0, cw, y0, rh = 520, 270, 300, 92
-    v = text(90, 150, 21, "12 · WHY IT IS RIGHT", "m", AMB, weight=500)
+    v = text(90, 150, 21, "NN · WHY IT IS RIGHT", "m", AMB, weight=500)
     v += text(90, 225, 50, "The right tool for read models", "d")
     for j, (o, _) in enumerate(opts):
         x = x0 + j * cw
@@ -367,7 +368,7 @@ def s14():  # use cases
     uc = [("Grid performance", "flatten associated columns"), ("Charting", "aggregate per series"), ("API decoupling", "stable contract"),
           ("Multi-lingual", "join the user's language"), ("Multi-tenant", "filter by tenant"), ("Active vs archived", "partition one table"),
           ("Versioning", "latest version per item"), ("Pivots and export", "one row per report line")]
-    v = text(90, 150, 21, "14 · USE CASES", "m", AMB, weight=500) + text(90, 225, 50, "Where teams use them", "d")
+    v = text(90, 150, 21, "NN · USE CASES", "m", AMB, weight=500) + text(90, 225, 50, "Where teams use them", "d")
     for i, (a, b) in enumerate(uc):
         x = 90 + (i % 4) * 382; y = 300 + (i // 4) * 280
         v += rect(x, y, 350, 240, W, HAIR, 2, 16) + f'<rect x="{x}" y="{y}" width="350" height="8" rx="4" fill="{COB if i < 4 else AMB}"/>'
@@ -413,7 +414,7 @@ def s16():
 
 
 def s17():  # support & pre-sales
-    sup = [("Slow page?", "Is the grid on a view? Check the plan for missing indexes."),
+    sup = [("Slow page?", "Count queries per page load; look for one query per row."),
            ("Wrong rows visible?", "Check the view's own access rules and WHERE."),
            ("Rows missing?", "Look for an INNER JOIN on an optional association."),
            ("CE6770 on build?", "An attribute type differs from its source column.")]
@@ -421,7 +422,7 @@ def s17():  # support & pre-sales
            ("Real performance", "Database work, not runtime loops."),
            ("Standard skill", "OQL reads like SQL, the most known query language."),
            ("Low-code surface", "Widgets, XPath and security stay the same.")]
-    v = text(90, 150, 21, "17 · FOR SUPPORT AND PRE-SALES", "m", AMB, weight=500) + text(90, 225, 50, "Talking points", "d")
+    v = text(90, 150, 21, "NN · FOR SUPPORT AND PRE-SALES", "m", AMB, weight=500) + text(90, 225, 50, "Talking points", "d")
     a = text(90, 310, 24, "SUPPORT CHECKLIST", "m", COB, weight=500)
     for i, (h, d_) in enumerate(sup):
         y = 340 + i * 135
@@ -460,22 +461,139 @@ def s18():  # get started
                     "Start with your slowest overview page.")
 
 
-SLIDES = [s01, s02, s03, s04, s05, s06, s07, s08, s09, s10, s11, s12, s13, s14, s15, s16, s17, s18]
+
+# ---------- with mxcli ----------
+
+def m1():  # build with mxcli
+    mdl = ["mdl 1;", "create view entity Shop.OrderOverview (", "  OrderNumber: string(20),", "  CustomerName: string(200),",
+           "  OrderTotal: decimal", ") as (", "  select o.OrderNumber as OrderNumber,", "         c.Name as CustomerName,",
+           "         sum(l.Quantity * l.UnitPrice) as OrderTotal", "  from Shop.SalesOrder as o", "  join o/Shop.SalesOrder_Customer/Shop.Customer as c",
+           "  left join o/Shop.OrderLine_SalesOrder/Shop.OrderLine as l", "  group by o.OrderNumber, c.Name", ");"]
+    v = code(70, 130, 890, mdl, 18, "mdlsource/view-entities.mdl", hl=(1,), lh=1.38)
+    gates = [("check", "syntax, refs, types"), ("exec", "write the .mpr"), ("docker check", "real mx check"), ("run --local", "app + Postgres"), ("oql", "query live data")]
+    g = label(70, 640, "THE GATES, CHEAPEST FIRST", COB)
+    for k, (a, b) in enumerate(gates):
+        x = 70 + k * 180
+        g += rect(x, 660, 165, 110, CT if k < 4 else GT, COB if k < 4 else GREEN, 2, 12)
+        g += text(x + 82, 705, 19, a, "m", INK, "middle", 600) + text(x + 82, 740, 15, b, "b", MUT, "middle")
+        if k < 4: g += line(x + 167, 715, x + 178, 715, COB, 2.5)
+    g += text(70, 815, 20, "./mxcli check view-entities.mdl -p ShopReports.mpr --references", "m", MUT)
+    return dict(label="With mxcli", title="View entities as code",
+                body="mxcli writes the Mendix model as text (MDL). A developer or an AI agent can create, check, run "
+                     "and query view entities without opening Studio Pro.",
+                visual=v + step("gates", "Gates", g, say="Then the gates, cheapest first: check, execute, Mendix's own model check, run the app locally, and query it with O Q L."),
+                say="With M X C L I, a view entity is a few lines of M D L: the attributes, then the O Q L query.")
+
+
+def m2():  # caught before the build
+    rows = [("string(60) over a string(200) column", "type mismatch", "CE6770: out of sync"),
+            ("ORDER BY without LIMIT", "MDL030", "CE0174 at build"),
+            ("sum(1), count(1) in an aggregate", "MDL037", "fails on HSQLDB"),
+            ("view entity on too old a Mendix", "MDL-VERSION01", "not supported"),
+            ("create or replace view entity", "MDL-V1-REPLACE01", "loses access rules"),
+            ("autonumber over an AutoNumber column", "V1-VIEWAUTONUMBER", "declare it long")]
+    v = label(80, 150, "YOU WRITE") + label(560, 150, "MXCLI SAYS", COB) + label(960, 150, "OTHERWISE", RED, anchor="end")
+    for k, (a, b, c) in enumerate(rows):
+        y = 170 + k * 108
+        v += rect(80, y, 880, 92, W, HAIR, 2, 12)
+        v += text(105, y + 55, 20, a, "m", INK)
+        v += pill(560, y + 24, 210, b, CT, COB, 44, 16)
+        v += text(945, y + 54, 17, c, "b", RED, "end")
+    return dict(label="With mxcli", title="Caught before the build",
+                body="mxcli knows the view entity rules that otherwise surface as a failed build or a database error at run time. "
+                     "Fix them in seconds, not minutes.", visual=v,
+                say="M X C L I checks the view entity rules before the build: type mismatches, order by without limit, "
+                    "literals that fail on H S Q L D B, version gates, and replacing a view where you meant to modify it.")
+
+
+def m3():  # analyze-runtime: four signals
+    sig = [("Logs", "runtime.log", "mxcli log set", "ConnectionBus_Queries TRACE", "Why did it fail? Which SQL?"),
+           ("Metrics", "/prometheus", "run --local --metrics", "connectionbus_selects_total", "How many queries per page?"),
+           ("Traces", "OpenTelemetry", "run --local --trace-otlp", "spans per microflow", "Where does the time go?"),
+           ("Catalog", ".mxcli/catalog.db", "refresh catalog full", "activities, refs, XPath", "Which model element is it?")]
+    v = ""
+    for k, (t, where, cmd, what, q) in enumerate(sig):
+        x = 80 + (k % 2) * 445; y = 140 + (k // 2) * 300
+        c = rect(x, y, 420, 270, W, HAIR, 2, 14) + f'<rect x="{x}" y="{y}" width="420" height="8" rx="4" fill="{COB}"/>'
+        c += text(x + 26, y + 60, 28, t, "d5") + text(x + 394, y + 58, 16, where, "m", MUT, "end")
+        c += text(x + 26, y + 100, 19, q, "b", INK)
+        c += rect(x + 26, y + 125, 368, 46, DARK, DARK, 0, 8) + text(x + 42, y + 155, 17, cmd, "m", CODEFG)
+        c += text(x + 26, y + 215, 17, what, "m", AMB, weight=500)
+        v += step(f"sig{k}", t, c)
+    j = rect(80, 750, 865, 90, AT, AMB, 2, 14) + text(110, 790, 22, "Join them", "d5") + text(110, 822, 18, "catalog × spans × app database in DuckDB: cost per model element", "b", INK)
+    return dict(label="Analyze runtime", title="Four signals, one skill",
+                body="The analyze-runtime skill tells an agent where each signal lives, how to switch it on locally, "
+                     "and how to join them to answer a performance question.",
+                visual=v + step("join", "Join", j, say="And it joins them: the model catalog, trace spans and the app's own database in one query engine."),
+                say="To analyse a slow page, the analyze-runtime skill combines four signals: logs, metrics, traces and the model catalog.")
+
+
+def m4():  # investigation steps
+    st = [("Run with metrics", "./mxcli run --local --metrics", "Prometheus on the admin port"),
+          ("Open the page, count", "connectionbus_selects_total", "+25 selects for one grid page"),
+          ("Log the SQL", "ConnectionBus_Queries, or the DB log", "20 identical shop$orderline queries"),
+          ("Find the model element", "CATALOG: who reads OrderLine?", "calculated attribute OrderTotalCalc"),
+          ("Replace and measure", "grid on Shop.OrderOverview", "+3 selects, all columns sortable")]
+    v = ""
+    for k, (a, b, c) in enumerate(st):
+        y = 130 + k * 148
+        col = GREEN if k == 4 else COB
+        blk = dot(115, y + 60, 26, col) + text(115, y + 70, 26, str(k + 1), "d5", W, "middle")
+        if k < 4: blk += line(115, y + 90, 115, y + 145, HAIR, 3)
+        blk += text(165, y + 48, 25, a, "d5") + text(165, y + 84, 18, b, "m", MUT)
+        blk += rect(600, y + 22, 360, 70, GT if k == 4 else (RT if k in (1, 2, 3) else CT), GT, 0, 10) + text(620, y + 64, 17, c, "b", GREEN if k == 4 else (RED if k in (1, 2, 3) else COB), weight=600)
+        v += step(f"i{k}", a, blk)
+    return dict(label="Analyze runtime", title="Find the N+1 in five steps",
+                body="The same steps support can follow on any slow overview page: count, look at the SQL, map it back "
+                     "to the model, fix, and measure again.", visual=v,
+                say="Here is the investigation on the demo app. Run it with metrics. Open the page and count: twenty-five selects. "
+                    "Log the S Q L: twenty identical order line queries. The catalog points to the calculated attribute. "
+                    "Replace the grid's source with the view entity, and measure again: three.")
+
+
+def m5():  # measured
+    v = label(80, 140, "ONE PAGE LOAD · 20 ROWS · 5,000 ORDERS · LOCAL POSTGRESQL")
+    def bar(y, lab, val, mx, col, txt):
+        w_ = 600 * val / mx
+        return text(80, y + 34, 21, lab, "b", INK) + f'<rect x="300" y="{y}" width="{w_}" height="48" rx="6" fill="{col}"/>' + text(300 + w_ + 14, y + 33, 22, txt, "d5", col)
+    a = text(80, 200, 24, "SQL statements", "d5")
+    a += bar(220, "Classic grid", 23, 25, RED, "23") + bar(285, "View entity", 2, 25, GREEN, "2")
+    b = text(80, 395, 24, "Selects metric", "d5")
+    b += bar(415, "Classic grid", 25, 25, RED, "25") + bar(480, "View entity", 3, 25, GREEN, "3")
+    br = rect(80, 580, 430, 260, RT, RT, 0, 14) + text(105, 620, 20, "CLASSIC: WHAT RAN", "m", RED, weight=500)
+    for k, t in enumerate(["1 × orders page", "1 × count", "1 × customers (batched)", "20 × order lines, one per row"]):
+        br += text(105, 665 + k * 42, 20, t, "b", INK, weight=600 if k == 3 else None)
+    br2 = rect(530, 580, 430, 260, GT, GT, 0, 14) + text(555, 620, 20, "VIEW ENTITY: WHAT RAN", "m", GREEN, weight=500)
+    for k, t in enumerate(["1 × page query (joins, sum)", "1 × count", "Total column sortable", "and filterable"]):
+        br2 += text(555, 665 + k * 42, 20, t, "b", INK)
+    return dict(label="Measured", title="Measured in the demo app",
+                body="Locally both pages load in about a quarter second. Over a real network, or with 100 rows per page, "
+                     "every extra round trip counts.",
+                visual=v + a + step("b", "Metric", b, say="The selects metric agrees: twenty-five against three.")
+                + step("br", "Breakdown", br + br2, say="The difference is the calculated attribute: one query per row. The view entity does it in one query, and its total is sortable too."),
+                say="These are measured numbers from the demo app. One page load of the classic grid sends twenty-three S Q L statements. The view entity sends two.")
+
+# (stable frame id, slide) in presentation order; ids stay with their slide when slides move
+SLIDES = [("ve01", s01), ("ve02", s02), ("ve03", s03), ("ve04", s04), ("ve05", s05), ("ve06", s06), ("ve07", s07),
+          ("ve08", s08), ("ve09", s09), ("ve10", s10), ("ve11", s11), ("ve12", s12), ("ve13", s13), ("ve14", s14),
+          ("ve15", s15), ("ve16", s16), ("ve19", m1), ("ve20", m2), ("ve21", m3), ("ve22", m4), ("ve23", m5),
+          ("ve17", s17), ("ve18", s18)]
 
 
 def frames():
     out = []
-    for i, _ in enumerate(SLIDES):
+    for i, (fid, _) in enumerate(SLIDES):
         x = (i % COLS) * (W_ + GAP); y = (i // COLS) * (H_ + GAP)
-        out.append((f"ve{i+1:02d}", x, y, W_, H_, (i + 1) * 10))
+        out.append((fid, x, y, W_, H_, (i + 1) * 10))
     return out
 
 
 def build(html):
     groups = []
-    for f, fn in zip(frames(), SLIDES):
+    for n, (f, (_, fn)) in enumerate(zip(frames(), SLIDES), 1):
         d = fn()
-        g = slide(f, d["n"], d["label"], d["title"], d["body"], d["visual"], full_width=d.get("full", False))
+        vis = d["visual"].replace("NN · ", f"{n:02d} · ")
+        g = slide(f, n, d["label"], d["title"], d["body"], vis, full_width=d.get("full", False))
         groups.append(narrate(g, d["say"]))
     inject(html, groups)
     return frames()

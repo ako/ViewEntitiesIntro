@@ -1,0 +1,51 @@
+mdl 1;
+-- Before / after pages for the deck's performance slides.
+-- "Classic": a Data grid 2 over SalesOrder, with the customer as an associated column
+-- and the total as a calculated attribute (a microflow per row).
+-- "View": the same grid over the Shop.OrderOverview view entity.
+
+create microflow Shop.CalcOrderTotal (
+  $SalesOrder: Shop.SalesOrder
+)
+returns Decimal as $Total
+begin
+  retrieve $Lines from $SalesOrder/Shop.OrderLine_SalesOrder;
+  $Total = sum $Lines of $currentObject/Quantity * $currentObject/UnitPrice;
+  return $Total;
+end;
+
+alter entity Shop.SalesOrder add attribute OrderTotalCalc: Decimal calculated by Shop.CalcOrderTotal;
+
+create page Shop.Orders_Classic (
+  Title: 'Orders (classic)',
+  Layout: MyFirstModule.App_Default
+) {
+  datagrid dgClassic (DataSource: database Shop.SalesOrder) {
+    column (Attribute: OrderNumber, Caption: 'Order')
+    column (Attribute: OrderDate, Caption: 'Date')
+    column (Attribute: SalesOrder_Customer/Name, Caption: 'Customer')
+    column (Attribute: OrderTotalCalc, Caption: 'Total')
+  }
+};
+
+create page Shop.Orders_View (
+  Title: 'Orders (view entity)',
+  Layout: MyFirstModule.App_Default
+) {
+  datagrid dgView (DataSource: database Shop.OrderOverview) {
+    column (Attribute: OrderNumber, Caption: 'Order')
+    column (Attribute: OrderDate, Caption: 'Date')
+    column (Attribute: CustomerName, Caption: 'Customer')
+    column (Attribute: OrderTotal, Caption: 'Total')
+  }
+};
+
+create or modify navigation Responsive
+  app title 'Mendix'
+  app icon Atlas_Core.Content.Mendix
+  home page MyFirstModule.Home_Web
+{
+  menu item 'Home' ( OnClick: show page MyFirstModule.Home_Web with (DisabledDuringExecution: false), Icon: glyph 57377 )
+  menu item 'Orders (classic)' ( OnClick: show page Shop.Orders_Classic, Icon: glyph 57377 )
+  menu item 'Orders (view entity)' ( OnClick: show page Shop.Orders_View, Icon: glyph 57377 )
+};

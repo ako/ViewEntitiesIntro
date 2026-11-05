@@ -1,6 +1,6 @@
 # Mendix View Entities: intro deck
 
-A Sketch Deck ([ako/inkscape-presenter](https://github.com/ako/inkscape-presenter)) introducing view entities in Mendix: the problem, the solution, how it works, why it is the right solution, and tips. It is written for Mendix developers, support and pre-sales.
+A Sketch Deck ([ako/inkscape-presenter](https://github.com/ako/inkscape-presenter)) introducing view entities in Mendix: the problem, the solution, how it works, why it is the right solution, tips, and how to build and measure them with mxcli and its analyze-runtime skill. It is written for Mendix developers, support and pre-sales.
 
 | File | What it is |
 |---|---|
@@ -10,7 +10,7 @@ A Sketch Deck ([ako/inkscape-presenter](https://github.com/ako/inkscape-presente
 | `presentation.html` | Standalone offline presentation |
 | `drawing.svg` | Inkscape drawing, using inkscape-presenter layer conventions |
 | `view-entities.mp4` | Narrated video, made with `deck_video.py` |
-| `demo/` | `ShopReports` Mendix 11.16 app bootstrapped with mxcli, plus the example view entities (`view-entities.mdl`) and the SQL the runtime sends for them (`sql-trace.md`) |
+| `demo/` | `ShopReports` Mendix 11.16 app bootstrapped with mxcli: example view entities (`view-entities.mdl`), the SQL the runtime sends (`sql-trace.md`), before/after pages (`app/mdlsource/performance-demo.mdl`), demo data (`seed-demo-data.sql`) and the measurement (`measure.py`, `measure.json`, `trace-*.log`) |
 
 ## Rebuild
 

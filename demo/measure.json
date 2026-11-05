@@ -1,0 +1,54 @@
+{
+  "classic": {
+    "runs": [
+      {
+        "ms": 361,
+        "selects": 25.0
+      },
+      {
+        "ms": 346,
+        "selects": 25.0
+      },
+      {
+        "ms": 235,
+        "selects": 25.0
+      },
+      {
+        "ms": 234,
+        "selects": 25.0
+      },
+      {
+        "ms": 245,
+        "selects": 25.0
+      }
+    ],
+    "median_ms": 245,
+    "median_selects": 25.0
+  },
+  "view": {
+    "runs": [
+      {
+        "ms": 229,
+        "selects": 3.0
+      },
+      {
+        "ms": 256,
+        "selects": 3.0
+      },
+      {
+        "ms": 225,
+        "selects": 3.0
+      },
+      {
+        "ms": 140,
+        "selects": 3.0
+      },
+      {
+        "ms": 234,
+        "selects": 3.0
+      }
+    ],
+    "median_ms": 229,
+    "median_selects": 3.0
+  }
+}
