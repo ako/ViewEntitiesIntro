@@ -1,0 +1,196 @@
+#!/usr/bin/env python3
+"""Slide kit for Sketch Deck: draws finished slides into the page's clean layer.
+
+House style: white 16:9 card with a cobalt spine, a numbered amber eyebrow,
+an Unbounded title and IBM Plex body copy in a right-hand column
+(x 1010..1620), and a diagram on the left (x 70..960, y 110..860).
+All slide content is authored in a local 1679.2 x 944.5 coordinate space;
+slide() scales it onto each frame, so frames of any size work.
+
+Usage (from a deck-specific script):
+    from slide_kit import *
+    visual = rect(90,200,300,200) + text(120,260,28,"Hello","d5")
+    groups = [slide(frame, 1, "Intro", "A title", "Body copy.", visual)]
+    inject("deck.html", groups)
+
+Build steps: wrap parts of a visual in step("key", "Name", svg). The page
+reveals steps one at a time when presenting (order editable in its Steps
+panel); everything outside a step, including the text column, is the base.
+Keys must be unique within a slide; keep them stable across redraws so the
+user's ordering and names survive.
+
+frame is (frame_id, x, y, w, h) from the manifest written by sketch_render.py.
+The user can edit the text of a finished slide in the page; inject() keys every
+<text> and <tspan> with data-tid for that. Before redrawing, bake their edits into
+the deck script (see SKILL.md, "4. Draw").
+CSS classes available on the page: d (Unbounded 700), d5 (Unbounded 500),
+b (IBM Plex Sans), m (IBM Plex Mono).
+"""
+import html, re
+INK="#1b2a33"; COB="#2a62c9"; CT="#e8eefa"; AMB="#e0a106"; AT="#fbf1d6"; MUT="#6f7d86"; HAIR="#d3d8d1"; RED="#e2541b"; W="#ffffff"; PAPER="#f6f7f4"
+E=html.escape
+def rect(x,y,w,h,fill=W,stroke=INK,sw=3,rx=12,extra=""): return f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="{rx}" fill="{fill}" stroke="{stroke}" stroke-width="{sw}" {extra}/>'
+def text(x,y,s,t,cls="b",fill=INK,anchor="start",weight=None):
+    w=f' font-weight="{weight}"' if weight else ''
+    return f'<text class="{cls}" x="{x}" y="{y}" font-size="{s}" text-anchor="{anchor}" style="fill:{fill}"{w}>{E(t)}</text>'
+def line(x1,y1,x2,y2,c=INK,sw=3,dash="",arrow=False,op=1):
+    d=f' stroke-dasharray="{dash}"' if dash else ''
+    m=' marker-end="url(#ah-%s)"'%("c" if c==COB else "i") if arrow else ''
+    return f'<path d="M{x1} {y1}L{x2} {y2}" stroke="{c}" stroke-width="{sw}" fill="none" stroke-linecap="round"{d}{m} opacity="{op}"/>'
+def curve(x1,y1,x2,y2,c=INK,sw=3,arrow=False,dash=""):
+    mx=(x1+x2)/2; d=f' stroke-dasharray="{dash}"' if dash else ''
+    m=' marker-end="url(#ah-%s)"'%("c" if c==COB else "i") if arrow else ''
+    return f'<path d="M{x1} {y1}C{mx} {y1} {mx} {y2} {x2} {y2}" stroke="{c}" stroke-width="{sw}" fill="none"{d}{m}/>'
+def bars(x,y,widths,h=10,gap=20,fill=HAIR):
+    return "".join(f'<rect x="{x}" y="{y+i*gap}" width="{w}" height="{h}" rx="{h/2}" fill="{fill}"/>' for i,w in enumerate(widths))
+def person(cx,cy,r=26,fill=INK):
+    return f'<circle cx="{cx}" cy="{cy-r*0.55}" r="{r*0.5}" fill="{fill}"/><path d="M{cx-r} {cy+r*0.95}C{cx-r} {cy+r*0.1} {cx+r} {cy+r*0.1} {cx+r} {cy+r*0.95}Z" fill="{fill}"/>'
+def ai(cx,cy,s=64,label="AI"):
+    return rect(cx-s/2,cy-s/2,s,s,COB,COB,0,s*0.28)+f'<path d="M{cx} {cy-s*0.28}L{cx+s*0.08} {cy-s*0.08}L{cx+s*0.28} {cy}L{cx+s*0.08} {cy+s*0.08}L{cx} {cy+s*0.28}L{cx-s*0.08} {cy+s*0.08}L{cx-s*0.28} {cy}L{cx-s*0.08} {cy-s*0.08}Z" fill="#fff"/>'+(text(cx,cy+s/2+26,20,label,"m",COB,"middle") if label else "")
+def check(cx,cy,r=13,fill=COB):
+    return f'<circle cx="{cx}" cy="{cy}" r="{r}" fill="{fill}"/><path d="M{cx-r*0.45} {cy}L{cx-r*0.1} {cy+r*0.38}L{cx+r*0.5} {cy-r*0.35}" stroke="#fff" stroke-width="{r*0.28}" fill="none" stroke-linecap="round" stroke-linejoin="round"/>'
+def dot(cx,cy,r,fill): return f'<circle cx="{cx}" cy="{cy}" r="{r}" fill="{fill}"/>'
+def wrap(t,n):
+    out=[];line_=""
+    for w in t.split():
+        if len(line_)+len(w)+1>n and line_: out.append(line_); line_=w
+        else: line_=(line_+" "+w).strip()
+    out.append(line_); return out
+
+
+LOCAL_W, LOCAL_H = 1679.2, 944.5
+
+def textcol(n, label, title, body, x=1010, title_size=50, title_chars=15, body_size=28, body_chars=38):
+    s = [text(x, 190, 21, f"{n:02d} · {label.upper()}", "m", AMB, weight=500)]
+    y = 270
+    for l in wrap(title, title_chars): s.append(text(x, y, title_size, l, "d")); y += title_size * 1.24
+    y += 28
+    for l in wrap(body, body_chars): s.append(text(x, y, body_size, l, "b", MUT)); y += body_size * 1.5
+    return "".join(s)
+
+def step(key, name, svg, say=None):
+    """A build step: revealed after the base when presenting. say: its narration line."""
+    s = f' data-say="{E(say)}"' if say else ''
+    return f'<g data-step="{E(key)}" data-name="{E(name)}"{s}>{svg}</g>'
+
+def load_pasted(export_dir):
+    """The finished slides the user pasted from other decks: {frame_id: doc} from the
+    cleanPaste collection of a database export (ArtifactData list with out_dir)."""
+    import glob, json, os
+    out = {}
+    for f in glob.glob(os.path.join(export_dir, 'cleanPaste', '*.json')):
+        d = json.load(open(f))
+        out[os.path.splitext(os.path.basename(f))[0]] = d.get('data', d)
+    return out
+
+def pasted_group(fid, doc, frame):
+    """A pasted slide (a cleanPaste doc) as a clean-layer group on frame (x, y, w, h), exactly
+    as the user pasted it: its markup, title, narration and build steps."""
+    x, y, w, h = frame[-4:] if len(frame) > 4 else frame
+    attrs = ''.join(f' {k}="{E(v)}"' for k, v in (doc.get('attrs') or {}).items()
+                    if re.fullmatch(r'data-[\w-]+|aria-[\w-]+|role', k) and k != 'data-frame')
+    return f'<g data-frame="{E(fid)}"{attrs} transform="translate({x} {y}) scale({w / LOCAL_W:.5f})">{doc.get("html", "")}</g>'
+
+def pasted_fonts(docs):
+    """The Google Fonts families (css2 'family=' values) the pasted slides need, for theme_page."""
+    from urllib.parse import urlparse, parse_qs
+    out = []
+    for d in docs.values():
+        u = d.get('fonts') or ''
+        if u.startswith('https://fonts.googleapis.com/css2?'):
+            out += [f for f in parse_qs(urlparse(u).query).get('family', []) if f not in out]
+    return out
+
+def narrate(group, say):
+    """Give a slide group (from slide(), or any kit's group()) the narration line spoken
+    when the slide arrives. Lines for its build steps go on step(..., say=...)."""
+    i = group.index('<g data-frame=') + len('<g')
+    return group[:i] + f' data-say="{E(say)}"' + group[i:]
+
+def depth(z, svg):
+    """A layer for the subtle and depth motions (inject(..., motion=...)): z from -2.5 (far
+    behind the slide) to 2.5 (near the viewer); 0 is the slide itself. Layers move at
+    their own pace while the camera flies and line up when it arrives. Ignored by the
+    default motion. May hold steps, or sit inside one."""
+    return f'<g data-depth="{z:g}">{svg}</g>'
+
+MOTIONS = ("glide", "subtle", "depth")
+
+def card():
+    return rect(0, 0, LOCAL_W, LOCAL_H, W, HAIR, 2, 22) + f'<rect x="0" y="0" width="12" height="{LOCAL_H}" rx="6" fill="{COB}"/>'
+
+def slide(frame, n, label, title, body, visual, full_width=False):
+    """One finished slide. full_width=True skips the text column so the
+    visual can use the whole card (put your own title in the visual)."""
+    fid, x, y, w, h = frame[:5]
+    k = w / LOCAL_W
+    inner = card() + visual + ("" if full_width else textcol(n, label, title, body))
+    return f'<g data-frame="{fid}" data-title="{E(title)}" transform="translate({x} {y}) scale({k:.5f})">{inner}</g>'
+
+DEFS = f'''<defs>
+<marker id="ah-c" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="{COB}"/></marker>
+<marker id="ah-i" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="{INK}"/></marker>
+<marker id="ah-a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="{AMB}"/></marker></defs>'''
+
+_TEXT_TAG = re.compile(r'<(text|tspan)((?:[\s/][^>]*)?)>')
+
+def number_text(svg):
+    """Give every <text> and <tspan> of one slide a data-tid (t1, t2, ... in document
+    order) unless it has one. The page keys the user's text edits by it, and gives
+    slides without them the same numbers when it loads."""
+    n = 0
+    def sub(m):
+        nonlocal n
+        n += 1
+        if 'data-tid=' in m.group(2):
+            return m.group(0)
+        return f'<{m.group(1)} data-tid="t{n}"{m.group(2)}>'
+    return _TEXT_TAG.sub(sub, svg)
+
+
+def inject(html_path, groups, defs=DEFS, motion="glide"):
+    """Replace the page's clean layer with defs + the given slide groups (one string per
+    slide); every kit writes its slides through here, so their text gets data-tid keys.
+    motion: "glide" (the default, a flat canvas), "subtle" (layers move a little
+    while the camera flies; see depth()) or "depth" (layers move twice as far, the
+    view tilts and build steps rise into place)."""
+    if motion not in MOTIONS:
+        raise ValueError(f"motion must be one of {MOTIONS}, not {motion!r}")
+    s = open(html_path).read()
+    i = s.index('<g id="clean"'); j = s.index('<g id="images">')
+    tag = '<g id="clean">' if motion == "glide" else f'<g id="clean" data-motion="{motion}">'
+    s = s[:i] + tag + '\n' + defs + "\n".join(number_text(g) for g in groups) + '\n    </g>\n    ' + s[j:]
+    open(html_path, 'w').write(s)
+
+
+# ---- page theming, shared by the style kits ----
+
+FONTS_LINK = 'https://fonts.googleapis.com/css2?'
+
+def theme_page(html_path, title, fonts=(), swaps=()):
+    """Prepare a fresh copy of the template for a deck: set its <title>, add
+    Google Fonts families (css2 'family=' values such as 'Kalam:wght@400;700')
+    so the page and its downloads load them, and apply (old, new) text swaps
+    that recolour the page. Safe to run twice. Stops with an error when the
+    template no longer contains a swap's text: fix the swap, don't skip it."""
+    s = open(html_path).read()
+    s = re.sub(r'<title>.*?</title>', lambda m: f'<title>{E(title)}</title>', s, count=1, flags=re.S)
+    i = s.index(FONTS_LINK) + len(FONTS_LINK)
+    j = s.index('"', i)
+    link = s[i:j]
+    for f in fonts:
+        if 'family=' + f.replace(' ', '+') not in link.replace('&amp;', '&'):
+            link = 'family=' + f.replace(' ', '+') + '&' + link
+    s = s[:i] + link + s[j:]
+    for old, new in swaps:
+        if new in s:
+            continue
+        if old not in s:
+            raise SystemExit(f"theme_page: template no longer contains {old!r}")
+        s = s.replace(old, new)
+    open(html_path, 'w').write(s)
+
+def frames_from_manifest(path):
+    import json
+    m = json.load(open(path))
+    return [(f["id"], f["x"], f["y"], f["w"], f["h"]) for f in m["frames"]]
