@@ -1,4 +1,5 @@
 mdl 1;
+create module Shop;
 -- Example model for the "Mendix View Entities" deck.
 -- A small shop: customers place orders, orders have lines, lines reference products,
 -- products belong to a category.
