@@ -1,0 +1,672 @@
+{
+ "video": "view-entities.mp4",
+ "seconds": 526.367,
+ "fps": 30,
+ "size": [
+  1920,
+  1080
+ ],
+ "voice": "bm_george",
+ "beats": [
+  {
+   "beat": 1,
+   "slide": 1,
+   "step": 0,
+   "title": "View entities",
+   "start_s": 0.0,
+   "say": "View entities in Mendix: data in exactly the shape a page, chart or API needs, with everything you expect from a normal entity.",
+   "line_start_s": 1.25,
+   "line_s": 9.515
+  },
+  {
+   "beat": 2,
+   "slide": 2,
+   "step": 0,
+   "title": "Six questions",
+   "start_s": 11.567,
+   "say": "We will answer six questions: what problem view entities solve, what they are, how they work, why they are the right answer, how to use them well, and how to build and measure them with M X C L I.",
+   "line_start_s": 12.983,
+   "line_s": 12.821
+  },
+  {
+   "beat": 3,
+   "slide": 2,
+   "step": 1,
+   "title": "Six questions",
+   "start_s": 26.6,
+   "say": "",
+   "line_start_s": null,
+   "line_s": null
+  },
+  {
+   "beat": 4,
+   "slide": 2,
+   "step": 2,
+   "title": "Six questions",
+   "start_s": 29.333,
+   "say": "",
+   "line_start_s": null,
+   "line_s": null
+  },
+  {
+   "beat": 5,
+   "slide": 2,
+   "step": 3,
+   "title": "Six questions",
+   "start_s": 32.067,
+   "say": "",
+   "line_start_s": null,
+   "line_s": null
+  },
+  {
+   "beat": 6,
+   "slide": 2,
+   "step": 4,
+   "title": "Six questions",
+   "start_s": 34.8,
+   "say": "",
+   "line_start_s": null,
+   "line_s": null
+  },
+  {
+   "beat": 7,
+   "slide": 2,
+   "step": 5,
+   "title": "Six questions",
+   "start_s": 37.533,
+   "say": "",
+   "line_start_s": null,
+   "line_s": null
+  },
+  {
+   "beat": 8,
+   "slide": 2,
+   "step": 6,
+   "title": "Six questions",
+   "start_s": 40.267,
+   "say": "",
+   "line_start_s": null,
+   "line_s": null
+  },
+  {
+   "beat": 9,
+   "slide": 3,
+   "step": 0,
+   "title": "Model shape is not page shape",
+   "start_s": 43.0,
+   "say": "A domain model is shaped for storing data: customers, orders and order lines, each in its own entity.",
+   "line_start_s": 44.417,
+   "line_s": 7.019
+  },
+  {
+   "beat": 10,
+   "slide": 3,
+   "step": 1,
+   "title": "Model shape is not page shape",
+   "start_s": 52.233,
+   "say": "But the page people want shows orders with a customer name, a line count and a total.",
+   "line_start_s": 52.483,
+   "line_s": 5.568
+  },
+  {
+   "beat": 11,
+   "slide": 3,
+   "step": 2,
+   "title": "Model shape is not page shape",
+   "start_s": 58.867,
+   "say": "Every one of those columns has to be joined, counted or summed from other entities.",
+   "line_start_s": 59.117,
+   "line_s": 5.76
+  },
+  {
+   "beat": 12,
+   "slide": 4,
+   "step": 0,
+   "title": "Four workarounds, four costs",
+   "start_s": 65.667,
+   "say": "Until now we had workarounds. Calculated attributes run a microflow for every object. Microflows with non-persistable entities load everything into the runtime. Associated grid columns fire many retrieves. Stored copies need event handlers to stay in sync.",
+   "line_start_s": 67.083,
+   "line_s": 18.176
+  },
+  {
+   "beat": 13,
+   "slide": 4,
+   "step": 1,
+   "title": "Four workarounds, four costs",
+   "start_s": 86.067,
+   "say": "",
+   "line_start_s": null,
+   "line_s": null
+  },
+  {
+   "beat": 14,
+   "slide": 4,
+   "step": 2,
+   "title": "Four workarounds, four costs",
+   "start_s": 88.8,
+   "say": "",
+   "line_start_s": null,
+   "line_s": null
+  },
+  {
+   "beat": 15,
+   "slide": 4,
+   "step": 3,
+   "title": "Four workarounds, four costs",
+   "start_s": 91.533,
+   "say": "",
+   "line_start_s": null,
+   "line_s": null
+  },
+  {
+   "beat": 16,
+   "slide": 4,
+   "step": 4,
+   "title": "Four workarounds, four costs",
+   "start_s": 94.267,
+   "say": "",
+   "line_start_s": null,
+   "line_s": null
+  },
+  {
+   "beat": 17,
+   "slide": 5,
+   "step": 0,
+   "title": "Where the time goes",
+   "start_s": 97.0,
+   "say": "So where does the time go?",
+   "line_start_s": 99.283,
+   "line_s": 1.877
+  },
+  {
+   "beat": 18,
+   "slide": 5,
+   "step": 1,
+   "title": "Where the time goes",
+   "start_s": 101.967,
+   "say": "With associated columns and calculated values, one page can mean one retrieve for the orders, then more for customers and lines, with the sums done in the runtime.",
+   "line_start_s": 102.217,
+   "line_s": 11.051
+  },
+  {
+   "beat": 19,
+   "slide": 5,
+   "step": 2,
+   "title": "Where the time goes",
+   "start_s": 114.067,
+   "say": "With a view entity it is a single query. The database joins, groups and sums, which is what it is built for.",
+   "line_start_s": 114.317,
+   "line_s": 7.424
+  },
+  {
+   "beat": 20,
+   "slide": 6,
+   "step": 0,
+   "title": "An entity defined by a query",
+   "start_s": 122.533,
+   "say": "The solution is a view entity: you write one OQL query that returns exactly the rows and columns the page needs.",
+   "line_start_s": 123.95,
+   "line_s": 8.597
+  },
+  {
+   "beat": 21,
+   "slide": 6,
+   "step": 1,
+   "title": "An entity defined by a query",
+   "start_s": 133.333,
+   "say": "Studio Pro turns it into an entity in the domain model. Every column alias becomes an attribute.",
+   "line_start_s": 133.583,
+   "line_s": 7.189
+  },
+  {
+   "beat": 22,
+   "slide": 7,
+   "step": 0,
+   "title": "Design time",
+   "start_s": 141.567,
+   "say": "At design time, each column of the SELECT maps to an attribute, with its type taken from the source column.",
+   "line_start_s": 142.983,
+   "line_s": 6.912
+  },
+  {
+   "beat": 23,
+   "slide": 7,
+   "step": 1,
+   "title": "Design time",
+   "start_s": 150.7,
+   "say": "Run Query shows a live preview from your running app, so you see the rows before you build a page.",
+   "line_start_s": 150.95,
+   "line_s": 6.208
+  },
+  {
+   "beat": 24,
+   "slide": 8,
+   "step": 0,
+   "title": "Run time: one SQL query",
+   "start_s": 157.967,
+   "say": "At run time, nothing is stored. Let's follow one request.",
+   "line_start_s": 159.383,
+   "line_s": 3.925
+  },
+  {
+   "beat": 25,
+   "slide": 8,
+   "step": 1,
+   "title": "Run time: one SQL query",
+   "start_s": 164.1,
+   "say": "A data grid asks for page one: filtered, sorted, twenty rows.",
+   "line_start_s": 164.35,
+   "line_s": 4.565
+  },
+  {
+   "beat": 26,
+   "slide": 8,
+   "step": 2,
+   "title": "Run time: one SQL query",
+   "start_s": 169.7,
+   "say": "The runtime inlines the view's query as a subquery and wraps the grid's filter, sort and limit around it.",
+   "line_start_s": 169.95,
+   "line_s": 7.04
+  },
+  {
+   "beat": 27,
+   "slide": 8,
+   "step": 3,
+   "title": "Run time: one SQL query",
+   "start_s": 177.8,
+   "say": "That is one SQL statement, so the database optimizer can plan the whole thing.",
+   "line_start_s": 178.05,
+   "line_s": 5.909
+  },
+  {
+   "beat": 28,
+   "slide": 9,
+   "step": 0,
+   "title": "Compose views from views",
+   "start_s": 184.767,
+   "say": "View entities compose. You can build complex queries from small, simple ones.",
+   "line_start_s": 187.017,
+   "line_s": 5.163
+  },
+  {
+   "beat": 29,
+   "slide": 9,
+   "step": 1,
+   "title": "Compose views from views",
+   "start_s": 192.967,
+   "say": "First a flat fact view: one row per order line, with year, month and category.",
+   "line_start_s": 193.217,
+   "line_s": 5.419
+  },
+  {
+   "beat": 30,
+   "slide": 9,
+   "step": 2,
+   "title": "Compose views from views",
+   "start_s": 199.433,
+   "say": "Then a second view groups those facts into revenue per month and category.",
+   "line_start_s": 199.683,
+   "line_s": 4.928
+  },
+  {
+   "beat": 31,
+   "slide": 9,
+   "step": 3,
+   "title": "Compose views from views",
+   "start_s": 205.4,
+   "say": "A chart uses it directly, and the whole stack is still one SQL statement.",
+   "line_start_s": 205.65,
+   "line_s": 5.483
+  },
+  {
+   "beat": 32,
+   "slide": 10,
+   "step": 0,
+   "title": "Security is the view's own",
+   "start_s": 211.933,
+   "say": "A view entity has its own access rules. That lets you show headcount per department to managers who may not see individual salaries.",
+   "line_start_s": 213.35,
+   "line_s": 8.896
+  },
+  {
+   "beat": 33,
+   "slide": 10,
+   "step": 1,
+   "title": "Security is the view's own",
+   "start_s": 223.033,
+   "say": "The flip side: the source entities' access rules are not applied. The view's own rules decide.",
+   "line_start_s": 223.283,
+   "line_s": 6.229
+  },
+  {
+   "beat": 34,
+   "slide": 10,
+   "step": 2,
+   "title": "Security is the view's own",
+   "start_s": 230.3,
+   "say": "So give every view entity access rules, filter rows by user where needed, and test with each role.",
+   "line_start_s": 230.55,
+   "line_s": 6.72
+  },
+  {
+   "beat": 35,
+   "slide": 11,
+   "step": 0,
+   "title": "Read here, write there",
+   "start_s": 238.067,
+   "say": "View entities are for reading. A row can be edited in memory, but committing it stores nothing.",
+   "line_start_s": 239.483,
+   "line_s": 6.144
+  },
+  {
+   "beat": 36,
+   "slide": 11,
+   "step": 1,
+   "title": "Read here, write there",
+   "start_s": 246.433,
+   "say": "To save, a microflow retrieves the source object, changes it and commits it.",
+   "line_start_s": 246.683,
+   "line_s": 5.333
+  },
+  {
+   "beat": 37,
+   "slide": 12,
+   "step": 0,
+   "title": "The right tool for read models",
+   "start_s": 252.8,
+   "say": "Why is this the right solution? Compared with the workarounds, only the view entity does the work in the database, keeps every grid feature, composes, needs no sync code, and stays readable as one declaration.",
+   "line_start_s": 254.217,
+   "line_s": 13.952
+  },
+  {
+   "beat": 38,
+   "slide": 13,
+   "step": 0,
+   "title": "Everything that takes an entity",
+   "start_s": 268.967,
+   "say": "The second reason: a view entity speaks the entity API that the whole platform already understands.",
+   "line_start_s": 271.25,
+   "line_s": 7.083
+  },
+  {
+   "beat": 39,
+   "slide": 13,
+   "step": 1,
+   "title": "Everything that takes an entity",
+   "start_s": 279.133,
+   "say": "Data grids, charts, microflow retrieves, published REST and OData resources, exports: if it takes an entity, it takes a view entity.",
+   "line_start_s": 279.383,
+   "line_s": 9.557
+  },
+  {
+   "beat": 40,
+   "slide": 13,
+   "step": 2,
+   "title": "Everything that takes an entity",
+   "start_s": 289.733,
+   "say": "And because pages and APIs depend on the view, you can refactor the domain model behind it without breaking them.",
+   "line_start_s": 289.983,
+   "line_s": 7.36
+  },
+  {
+   "beat": 41,
+   "slide": 14,
+   "step": 0,
+   "title": "Where teams use them",
+   "start_s": 298.133,
+   "say": "Where do teams use them? Faster grids and charts first, then stable APIs, multi-lingual and multi-tenant data, archiving, versioning, pivots and exports.",
+   "line_start_s": 299.55,
+   "line_s": 11.093
+  },
+  {
+   "beat": 42,
+   "slide": 15,
+   "step": 0,
+   "title": "Modelling tips",
+   "start_s": 311.433,
+   "say": "Five modelling tips. Keep views small and compose them. Use left joins unless rows should drop. Let the widget sort. Filter from outside, because views have no parameters. And select the source I D to get an association back.",
+   "line_start_s": 312.85,
+   "line_s": 15.381
+  },
+  {
+   "beat": 43,
+   "slide": 16,
+   "step": 0,
+   "title": "OQL gotchas",
+   "start_s": 329.033,
+   "say": "Five gotchas. Switch on O Q L version two first. Attribute types must match their source columns exactly. O Q L is not quite S Q L: a colon divides, and count takes an I D. Run Query needs the running app. And read the query plan in development only.",
+   "line_start_s": 330.45,
+   "line_s": 17.6
+  },
+  {
+   "beat": 44,
+   "slide": 17,
+   "step": 0,
+   "title": "View entities as code",
+   "start_s": 348.867,
+   "say": "With M X C L I, a view entity is a few lines of M D L: the attributes, then the O Q L query.",
+   "line_start_s": 351.15,
+   "line_s": 7.829
+  },
+  {
+   "beat": 45,
+   "slide": 17,
+   "step": 1,
+   "title": "View entities as code",
+   "start_s": 359.767,
+   "say": "Then the gates, cheapest first: check, execute, Mendix's own model check, run the app locally, and query it with O Q L.",
+   "line_start_s": 360.017,
+   "line_s": 8.277
+  },
+  {
+   "beat": 46,
+   "slide": 18,
+   "step": 0,
+   "title": "Caught before the build",
+   "start_s": 369.1,
+   "say": "M X C L I checks the view entity rules before the build: type mismatches, order by without limit, literals that fail on H S Q L D B, version gates, and replacing a view where you meant to modify it.",
+   "line_start_s": 370.517,
+   "line_s": 14.357
+  },
+  {
+   "beat": 47,
+   "slide": 19,
+   "step": 0,
+   "title": "Four signals, one skill",
+   "start_s": 385.667,
+   "say": "To analyse a slow page, the analyze-runtime skill combines four signals: logs, metrics, traces and the model catalog.",
+   "line_start_s": 387.083,
+   "line_s": 9.045
+  },
+  {
+   "beat": 48,
+   "slide": 19,
+   "step": 1,
+   "title": "Four signals, one skill",
+   "start_s": 396.933,
+   "say": "",
+   "line_start_s": null,
+   "line_s": null
+  },
+  {
+   "beat": 49,
+   "slide": 19,
+   "step": 2,
+   "title": "Four signals, one skill",
+   "start_s": 399.667,
+   "say": "",
+   "line_start_s": null,
+   "line_s": null
+  },
+  {
+   "beat": 50,
+   "slide": 19,
+   "step": 3,
+   "title": "Four signals, one skill",
+   "start_s": 402.4,
+   "say": "",
+   "line_start_s": null,
+   "line_s": null
+  },
+  {
+   "beat": 51,
+   "slide": 19,
+   "step": 4,
+   "title": "Four signals, one skill",
+   "start_s": 405.133,
+   "say": "",
+   "line_start_s": null,
+   "line_s": null
+  },
+  {
+   "beat": 52,
+   "slide": 19,
+   "step": 5,
+   "title": "Four signals, one skill",
+   "start_s": 407.867,
+   "say": "And it joins them: the model catalog, trace spans and the app's own database in one query engine.",
+   "line_start_s": 408.117,
+   "line_s": 6.741
+  },
+  {
+   "beat": 53,
+   "slide": 20,
+   "step": 0,
+   "title": "Find the N+1 in five steps",
+   "start_s": 415.667,
+   "say": "Here is the investigation on the demo app. Run it with metrics. Open the page and count: twenty-five selects. Log the S Q L: twenty identical order line queries. The catalog points to the calculated attribute. Replace the grid's source with the view entity, and measure again: three.",
+   "line_start_s": 417.083,
+   "line_s": 19.136
+  },
+  {
+   "beat": 54,
+   "slide": 20,
+   "step": 1,
+   "title": "Find the N+1 in five steps",
+   "start_s": 437.033,
+   "say": "",
+   "line_start_s": null,
+   "line_s": null
+  },
+  {
+   "beat": 55,
+   "slide": 20,
+   "step": 2,
+   "title": "Find the N+1 in five steps",
+   "start_s": 439.767,
+   "say": "",
+   "line_start_s": null,
+   "line_s": null
+  },
+  {
+   "beat": 56,
+   "slide": 20,
+   "step": 3,
+   "title": "Find the N+1 in five steps",
+   "start_s": 442.5,
+   "say": "",
+   "line_start_s": null,
+   "line_s": null
+  },
+  {
+   "beat": 57,
+   "slide": 20,
+   "step": 4,
+   "title": "Find the N+1 in five steps",
+   "start_s": 445.233,
+   "say": "",
+   "line_start_s": null,
+   "line_s": null
+  },
+  {
+   "beat": 58,
+   "slide": 20,
+   "step": 5,
+   "title": "Find the N+1 in five steps",
+   "start_s": 447.967,
+   "say": "",
+   "line_start_s": null,
+   "line_s": null
+  },
+  {
+   "beat": 59,
+   "slide": 21,
+   "step": 0,
+   "title": "Measured in the demo app",
+   "start_s": 450.7,
+   "say": "These are measured numbers from the demo app. One page load of the classic grid sends twenty-three S Q L statements. The view entity sends two.",
+   "line_start_s": 452.983,
+   "line_s": 9.493
+  },
+  {
+   "beat": 60,
+   "slide": 21,
+   "step": 1,
+   "title": "Measured in the demo app",
+   "start_s": 463.267,
+   "say": "The selects metric agrees: twenty-five against three.",
+   "line_start_s": 463.517,
+   "line_s": 3.605
+  },
+  {
+   "beat": 61,
+   "slide": 21,
+   "step": 2,
+   "title": "Measured in the demo app",
+   "start_s": 467.933,
+   "say": "The difference is the calculated attribute: one query per row. The view entity does it in one query, and its total is sortable too.",
+   "line_start_s": 468.183,
+   "line_s": 9.109
+  },
+  {
+   "beat": 62,
+   "slide": 22,
+   "step": 0,
+   "title": "Talking points",
+   "start_s": 478.1,
+   "say": "A page for support and pre-sales colleagues.",
+   "line_start_s": 479.517,
+   "line_s": 3.051
+  },
+  {
+   "beat": 63,
+   "slide": 22,
+   "step": 1,
+   "title": "Talking points",
+   "start_s": 483.367,
+   "say": "For support: a slow page, wrong rows, missing rows or a build error each have a usual cause in the view.",
+   "line_start_s": 483.617,
+   "line_s": 6.976
+  },
+  {
+   "beat": 64,
+   "slide": 22,
+   "step": 2,
+   "title": "Talking points",
+   "start_s": 491.4,
+   "say": "For pre-sales: one definition feeds grids, charts and APIs, with real database performance, a query language people already know, and the low-code surface unchanged.",
+   "line_start_s": 491.65,
+   "line_s": 11.755
+  },
+  {
+   "beat": 65,
+   "slide": 23,
+   "step": 0,
+   "title": "Start with one slow page",
+   "start_s": 504.2,
+   "say": "View entities have been generally available since Mendix ten point twenty-two and keep improving in Mendix eleven. Start with your slowest overview page.",
+   "line_start_s": 505.617,
+   "line_s": 10.283
+  },
+  {
+   "beat": 66,
+   "slide": 23,
+   "step": 1,
+   "title": "Start with one slow page",
+   "start_s": 516.7,
+   "say": "Enable O Q L version two, add a view entity, write and check the query, add access rules, and point a grid or chart at it.",
+   "line_start_s": 516.95,
+   "line_s": 8.619
+  }
+ ]
+}
